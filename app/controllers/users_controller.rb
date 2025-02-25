@@ -7,6 +7,10 @@ class UsersController < ApplicationController
   end
 
   def create
+    if User.find_by({"email" => params["email"].downcase})
+      redirect_to "/login"
+      flash["notice"] = "User already exists, login here!"
+  else
     @user = User.new
     @user["first_name"] = params["first_name"]
     @user["last_name"] = params["last_name"]
@@ -15,5 +19,6 @@ class UsersController < ApplicationController
     @user["password"] = BCrypt::Password.create(params["password"])
     @user.save
     redirect_to "/users/#{@user["id"]}"
+  end
   end
 end
